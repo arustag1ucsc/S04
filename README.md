@@ -21,7 +21,7 @@ Mysterious names are an issue for comprehensibility. For persons who may want to
 - Rename Variable: The more a variable is used, and the more important it is to the code, the more important it is that the variable has a good name, so rename variables with vague names if they meet either condition.
 - Rename Field: Rename fields if it makes them easier to understand and rename all accessors and methods related to the field accordingly, and test the code.
 
-**Code Example ():**
+**Code Example (C):**
 
 Before:
 
