@@ -45,6 +45,77 @@ int rectangleArea(int x, int y) {
 
 ## Long Function
 
+The long function code smell happens when a function does too many things or includes too much code, making it difficult to understand. Shorter functions are usually easier to read, reuse, and change because each one can focus on a specific task. While splitting a function into smaller ones means the reader may have to look at other functions to understand everything, clear and meaningful names help explain their purpose without needing to read every line.
+
+Long functions can arise when programmers keep adding new logic to an existing function instead of separating parts into their own functions. This can make the code harder to maintain because calculations, conditions, and loops are all mixed together. The main issue is not just how many lines a function has, but how difficult it is to understand what it does and how it does it.
+
+**Prevention and Refactoring:**
+
+- Try to keep functions focused on one clear purpose and give them names that describe what they do.
+- If you feel the need to add a comment explaining a block of code, consider turning that block into a clearly named function instead.
+- Look for related calculations, conditionals, and loops that can be separated into smaller functions, even if the extracted code is only one line.
+
+**Refactoring existing code:**
+
+- Extract Function: Move a group of related statements into its own function with a meaningful name. This is usually the first and most useful way to shorten long functions.
+- Replace Temp with Query: Replace unnecessary temporary variables with functions that calculate their values, making extraction easier.
+- Introduce Parameter Object or Preserve Whole Object: Reduce the number of parameters needed when moving code into a separate function.
+- Decompose Conditional: Move complicated conditional logic into smaller, clearly named functions. If the same condition is handled repeatedly, consider Replace Conditional with Polymorphism.
+- Split Loop: Separate a loop that is doing more than one task into loops or functions with distinct purposes.
+- Replace Function with Command: If too many temporary variables or parameters still make extraction difficult, consider putting the operation into a command object.
+
+**Code Example (JavaScript):**
+
+Before:
+
+```javascript
+function processOrder(order) {
+    let subtotal = 0;
+    for (const item of order.items) {
+        subtotal += item.price * item.quantity;
+    }
+
+    let discount = 0;
+    if (order.isMember) {
+        discount = subtotal * 0.1;
+    }
+
+    let shipping = 5;
+    if (subtotal >= 50) {
+        shipping = 0;
+    }
+
+    return subtotal - discount + shipping;
+}
+```
+
+- This function calculates the subtotal, applies a member discount, and decides the shipping cost all in one place. Although the steps are not especially complicated, having several responsibilities in one function makes it harder to quickly understand or change a specific rule.
+
+After:
+
+```javascript
+function calculateSubtotal(items) {
+    return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+}
+
+function calculateMemberDiscount(subtotal, isMember) {
+    return isMember ? subtotal * 0.1 : 0;
+}
+
+function calculateShipping(subtotal) {
+    return subtotal >= 50 ? 0 : 5;
+}
+
+function processOrder(order) {
+    const subtotal = calculateSubtotal(order.items);
+    const discount = calculateMemberDiscount(subtotal, order.isMember);
+    const shipping = calculateShipping(subtotal);
+    return subtotal - discount + shipping;
+}
+```
+
+- Refactored with Extract Function: The subtotal, discount, and shipping calculations are now in separate functions with names that explain their purpose. The `processOrder` function is easier to follow because it shows the overall process without mixing all the details together. The behavior stays the same, but each rule can now be updated more easily.
+
 ## Primitive Obsession
 
 The primitive obsession code smell is the habit or reliance of using built in primitives such as int, char, float, boolean, string, etc., for complex concepts, when they can be better represented through their own types or objects.
